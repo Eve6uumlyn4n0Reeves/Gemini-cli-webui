@@ -1,0 +1,340 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables for Design Tokens */
+@layer base {
+  :root {
+    /* Layout & Structure */
+    --radius: 0.5rem;
+    
+    /* Light Theme Colors */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    /* Primary Brand Colors */
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    
+    /* Secondary Colors */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    
+    /* Muted Colors */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    /* Accent Colors */
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    
+    /* UI Elements */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    
+    /* States */
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 210 40% 98%;
+    
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --error: 0 72% 51%;
+    --info: 199 89% 48%;
+    
+    /* Editor Colors (VS Code Light) */
+    --editor-background: 0 0% 100%;
+    --editor-foreground: 0 0% 0%;
+    --editor-selection: 210 100% 93%;
+    --editor-line-number: 0 0% 60%;
+    --editor-current-line: 210 100% 97%;
+    
+    /* Sidebar Colors */
+    --sidebar: 0 0% 98%;
+    --sidebar-foreground: 222.2 84% 4.9%;
+    --sidebar-primary: 221.2 83.2% 53.3%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222.2 84% 4.9%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 221.2 83.2% 53.3%;
+  }
+
+  .dark {
+    /* Dark Theme Colors */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* Primary Colors (Dark) */
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    
+    /* Secondary Colors (Dark) */
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    
+    /* Muted Colors (Dark) */
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    /* Accent Colors (Dark) */
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    
+    /* UI Elements (Dark) */
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+    
+    /* States (Dark) */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    
+    /* Status Colors (Dark) */
+    --success: 142 76% 56%;
+    --warning: 38 92% 60%;
+    --error: 0 72% 61%;
+    --info: 199 89% 58%;
+    
+    /* Editor Colors (VS Code Dark+) */
+    --editor-background: 222.2 84% 4.9%;
+    --editor-foreground: 210 40% 98%;
+    --editor-selection: 217.2 91.2% 59.8%;
+    --editor-line-number: 215 15% 55%;
+    --editor-current-line: 217.2 32.6% 17.5%;
+    
+    /* Sidebar Colors (Dark) */
+    --sidebar: 220 13% 18%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217.2 91.2% 59.8%;
+    --sidebar-primary-foreground: 222.2 84% 4.9%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-ring: 224.3 76.3% 94.1%;
+  }
+}
+
+/* Base Styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+  
+  h1 {
+    @apply text-4xl lg:text-5xl;
+  }
+  
+  h2 {
+    @apply text-3xl lg:text-4xl;
+  }
+  
+  h3 {
+    @apply text-2xl lg:text-3xl;
+  }
+  
+  h4 {
+    @apply text-xl lg:text-2xl;
+  }
+  
+  /* Code and Monospace */
+  code {
+    @apply font-mono text-sm;
+  }
+  
+  pre {
+    @apply font-mono text-sm bg-muted p-4 rounded-lg overflow-x-auto;
+  }
+  
+  /* Selection */
+  ::selection {
+    @apply bg-primary/20;
+  }
+  
+  /* Scrollbars */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+  
+  /* Focus States */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+/* Component Layer */
+@layer components {
+  /* Chat Bubble Styles */
+  .chat-bubble-user {
+    @apply bg-primary text-primary-foreground rounded-2xl rounded-br-md px-4 py-3 max-w-[80%] ml-auto;
+  }
+  
+  .chat-bubble-assistant {
+    @apply bg-muted text-muted-foreground rounded-2xl rounded-bl-md px-4 py-3 max-w-[80%] mr-auto;
+  }
+  
+  .chat-bubble-system {
+    @apply bg-accent text-accent-foreground rounded-xl px-3 py-2 text-center text-sm mx-auto max-w-fit;
+  }
+  
+  /* Loading Animation */
+  .typing-indicator::after {
+    content: '|';
+    @apply animate-pulse text-muted-foreground;
+  }
+  
+  /* Editor Styles */
+  .editor-container {
+    @apply bg-editor-background text-editor-foreground font-mono text-sm;
+  }
+  
+  .editor-line-numbers {
+    @apply text-editor-line-number text-right pr-4 select-none;
+  }
+  
+  .editor-current-line {
+    @apply bg-editor-current-line;
+  }
+  
+  .editor-selection {
+    @apply bg-editor-selection;
+  }
+  
+  /* Sidebar Styles */
+  .sidebar-item {
+    @apply flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors;
+    @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+    @apply focus-visible:bg-sidebar-accent focus-visible:text-sidebar-accent-foreground;
+  }
+  
+  .sidebar-item-active {
+    @apply bg-sidebar-primary text-sidebar-primary-foreground;
+    @apply hover:bg-sidebar-primary/90;
+  }
+  
+  /* Status Indicators */
+  .status-success {
+    @apply text-success bg-success/10 border-success/20;
+  }
+  
+  .status-warning {
+    @apply text-warning bg-warning/10 border-warning/20;
+  }
+  
+  .status-error {
+    @apply text-error bg-error/10 border-error/20;
+  }
+  
+  .status-info {
+    @apply text-info bg-info/10 border-info/20;
+  }
+  
+  /* Glass Effect */
+  .glass {
+    @apply backdrop-blur-lg bg-background/80 border border-border/50;
+  }
+  
+  /* Animations */
+  .fade-in {
+    @apply animate-fade-in;
+  }
+  
+  .slide-in-left {
+    @apply animate-slide-in-from-left;
+  }
+  
+  .slide-in-right {
+    @apply animate-slide-in-from-right;
+  }
+  
+  .slide-in-top {
+    @apply animate-slide-in-from-top;
+  }
+  
+  .slide-in-bottom {
+    @apply animate-slide-in-from-bottom;
+  }
+}
+
+/* Utilities Layer */
+@layer utilities {
+  /* Text Utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  
+  /* Layout Utilities */
+  .container-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  .safe-area-inset {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Interactive States */
+  .interactive {
+    @apply transition-colors duration-200 ease-in-out;
+    @apply hover:bg-accent hover:text-accent-foreground;
+    @apply focus-visible:bg-accent focus-visible:text-accent-foreground;
+    @apply active:scale-95 active:transition-transform active:duration-75;
+  }
+  
+  /* Loading States */
+  .loading {
+    @apply animate-pulse;
+  }
+  
+  .loading-dots::after {
+    content: '';
+    @apply inline-block w-4 animate-pulse;
+    animation: loading-dots 1.4s infinite ease-in-out both;
+  }
+  
+  @keyframes loading-dots {
+    0%, 80%, 100% {
+      opacity: 0;
+    }
+    40% {
+      opacity: 1;
+    }
+  }
+}
