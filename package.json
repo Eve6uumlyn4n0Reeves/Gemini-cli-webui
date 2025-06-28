@@ -15,19 +15,26 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:mock": "GEMINI_ADAPTER_TYPE=mock turbo run dev",
+    "dev:real": "GEMINI_ADAPTER_TYPE=subprocess turbo run dev",
+    "dev:core": "GEMINI_ADAPTER_TYPE=core turbo run dev",
+    "start": "cd packages/backend && pnpm start",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "type-check": "turbo run type-check",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
     "test:coverage": "turbo run test:coverage",
+    "test:e2e": "playwright test",
     "clean": "turbo run clean",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "prepare": "husky install",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build && changeset publish",
+    "setup": "pnpm install && cp .env.example .env",
+    "check-gemini": "which gemini || echo 'gemini-cli not found, please install with: npm install -g @google/gemini-cli'"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",

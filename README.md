@@ -8,7 +8,7 @@ A modern, full-featured web interface for Gemini CLI with enhanced visualization
 
 This is a complete rewrite of the Gemini CLI WebUI, built from the ground up with a focus on:
 
-- **Full CLI Integration**: Deep integration with `@google/gemini-cli-core` (in progress)
+- **Full CLI Integration**: Multiple adapters for integrating with Google Gemini CLI
 - **Enhanced Visualization**: Beautiful, animated UI components for tool execution and reasoning
 - **ReAct Engine**: Intelligent reasoning with Thought-Action-Observation cycles
 - **Real-time Communication**: WebSocket-based real-time messaging and status updates
@@ -17,8 +17,13 @@ This is a complete rewrite of the Gemini CLI WebUI, built from the ground up wit
 
 ## ✨ Latest Updates (2025-06-28)
 
-### New Visualization Components
+### 🆕 Real Gemini CLI Integration
+- **Multiple Adapter Support**: Choose between Mock, Subprocess, Core, or API adapters
+- **Subprocess Adapter**: Run real gemini-cli as a child process
+- **Core Adapter**: Direct integration with gemini-cli core modules
+- **Configuration System**: Easy setup with environment variables
 
+### 🎨 New Visualization Components
 - **ReActThinkingEnhanced**: Animated reasoning process with typing effects
 - **ToolExecutionLogsEnhanced**: Real-time execution logs with progress tracking
 - **ToolExecutionMonitor**: Dashboard for monitoring active tool executions
@@ -73,6 +78,7 @@ v0.2 code webui/
 
 - Node.js 18 or higher
 - pnpm 8 or higher
+- @google/gemini-cli (optional, for real integration)
 - Docker (optional, for sandbox execution)
 
 ### Installation
@@ -85,8 +91,16 @@ cd "v0.2 code webui"
 # Install dependencies
 pnpm install
 
+# (Optional) Install gemini-cli for real integration
+npm install -g @google/gemini-cli
+
+# Quick setup
+pnpm setup
+
 # Start development servers
-pnpm dev
+pnpm dev        # Use mock adapter (default)
+pnpm dev:real   # Use real gemini-cli
+pnpm dev:core   # Use core integration
 ```
 
 ### Environment Variables
@@ -94,8 +108,16 @@ pnpm dev
 Create a `.env` file in the root directory:
 
 ```bash
-# Required
+# Gemini API Configuration
 GEMINI_API_KEY=your-api-key-here
+GEMINI_MODEL=gemini-pro
+
+# Adapter Configuration
+# Options: mock, subprocess, core, api
+GEMINI_ADAPTER_TYPE=mock
+
+# If using subprocess adapter
+GEMINI_EXECUTABLE_PATH=gemini
 
 # Optional
 NODE_ENV=development
@@ -103,6 +125,33 @@ LOG_LEVEL=debug
 PORT=3000
 WS_PORT=8080
 ```
+
+See `.env.example` for all available options.
+
+## 🔌 Adapter System
+
+Gemini CLI WebUI supports multiple integration methods:
+
+### Mock Adapter (Default)
+- Perfect for development and testing
+- No API key required
+- Simulates all responses
+
+### Subprocess Adapter
+- Runs real gemini-cli as a child process
+- Full feature support including MCP and sandboxing
+- Requires gemini-cli to be installed
+
+### Core Adapter
+- Direct integration with gemini-cli modules
+- Best performance
+- Type-safe integration
+
+### API Adapter (Coming Soon)
+- Connect to remote gemini-cli instances
+- Suitable for distributed deployments
+
+For detailed integration instructions, see [INTEGRATION.md](./docs/INTEGRATION.md).
 
 ## 🎨 Key Features
 

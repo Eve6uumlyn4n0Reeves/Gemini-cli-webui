@@ -13,11 +13,13 @@ import type {
 import { GeminiClientAdapter, type GeminiClientConfig } from '../adapters/GeminiClientAdapter.js';
 import { ToolAdapter, type ToolAdapterConfig, type ToolExecutionContext } from '../adapters/ToolAdapter.js';
 import { ApprovalBridge, type ApprovalBridgeConfig, type ApprovalWorkflow } from '../bridges/ApprovalBridge.js';
+import { AdapterType, AdapterConfig, createAdapter, getDefaultAdapterConfig } from '../config/adapterConfig.js';
 
 /**
  * 核心服务配置
  */
 export interface CoreServiceConfig {
+  adapterConfig?: AdapterConfig;
   geminiClient: Partial<GeminiClientConfig>;
   toolAdapter: Partial<ToolAdapterConfig>;
   approvalBridge: Partial<ApprovalBridgeConfig>;
@@ -78,9 +80,10 @@ export class CoreService extends EventEmitter<CoreServiceEvents> {
   private status: CoreServiceStatus = 'stopped';
   
   // 核心组件
-  private geminiClient: GeminiClientAdapter;
+  private geminiClient: GeminiClientAdapter | any; // 支持多种适配器类型
   private toolAdapter: ToolAdapter;
   private approvalBridge: ApprovalBridge;
+  private adapterType: AdapterType;
   
   // 会话管理
   private activeSessions = new Map<string, Conversation>();
@@ -97,7 +100,7 @@ export class CoreService extends EventEmitter<CoreServiceEvents> {
 
   constructor(config: Partial<CoreServiceConfig> = {}) {
     super();
-    this.config = this.validateConfig(config);
+    this.config = this.mergeConfig(config);
     this.startTime = Date.now();
     
     // 初始化统计信息
@@ -113,7 +116,8 @@ export class CoreService extends EventEmitter<CoreServiceEvents> {
     };
     
     // 初始化核心组件
-    this.geminiClient = new GeminiClientAdapter(this.config.geminiClient);
+    this.adapterType = this.config.adapterConfig?.type || AdapterType.MOCK;
+    // Gemini 客户端将在 start() 方法中根据配置创建
     this.toolAdapter = new ToolAdapter(this.config.toolAdapter);
     this.approvalBridge = new ApprovalBridge(this.config.approvalBridge);
     
@@ -135,7 +139,7 @@ export class CoreService extends EventEmitter<CoreServiceEvents> {
       this.debugLog('开始启动核心服务');
 
       // 初始化 Gemini 客户端
-      await this.geminiClient.initialize();
+      await this.initializeGeminiClient();
       
       // 启动统计信息收集
       if (this.config.enableMetrics) {
@@ -662,6 +666,59 @@ export class CoreService extends EventEmitter<CoreServiceEvents> {
   private debugLog(message: string, data?: any): void {
     if (this.config.debugMode) {
       this.emit('debug', `[CoreService] ${message}`, data);
+    }
+  }
+
+  /**
+   * 合并配置
+   */
+  private mergeConfig(config: Partial<CoreServiceConfig>): CoreServiceConfig {
+    const adapterConfig = config.adapterConfig || getDefaultAdapterConfig();
+    
+    return {
+      adapterConfig,
+      geminiClient: config.geminiClient || {},
+      toolAdapter: config.toolAdapter || {},
+      approvalBridge: config.approvalBridge || {},
+      enableWebSocketNotifications: config.enableWebSocketNotifications ?? true,
+      enableMetrics: config.enableMetrics ?? true,
+      maxConcurrentSessions: config.maxConcurrentSessions ?? 10,
+      sessionTimeout: config.sessionTimeout ?? 3600000, // 1小时
+      debugMode: config.debugMode ?? false
+    };
+  }
+
+  /**
+   * 初始化 Gemini 客户端
+   */
+  private async initializeGeminiClient(): Promise<void> {
+    const adapterConfig = this.config.adapterConfig || getDefaultAdapterConfig();
+    
+    try {
+      // 创建适配器
+      this.geminiClient = await createAdapter(adapterConfig);
+      
+      // 设置事件监听
+      this.geminiClient.on('error', (error: Error) => {
+        this.emit('error', error);
+      });
+      
+      this.geminiClient.on('message:received', (message: Message) => {
+        this.emit('message-received', message);
+        this.updateMetrics({ totalMessages: this.metrics.totalMessages + 1 });
+      });
+      
+      this.geminiClient.on('tool:execution:started', (execution: ToolExecution) => {
+        this.emit('tool-execution-requested', execution);
+        this.updateMetrics({ totalToolExecutions: this.metrics.totalToolExecutions + 1 });
+      });
+      
+      // 初始化适配器
+      await this.geminiClient.initialize();
+      
+      this.debugLog(`Gemini 客户端初始化成功 (类型: ${adapterConfig.type})`);
+    } catch (error) {
+      throw new Error(`Gemini 客户端初始化失败: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 }
